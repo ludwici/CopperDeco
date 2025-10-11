@@ -1,0 +1,43 @@
+{
+  "itemGroup.copperdeco": "Copper Deco",
+
+  "block.copperdeco.copper_block_tile": "Плитка мідного блока",
+  "block.copperdeco.exposed_copper_tile": "Потемніла плитка мідного блока",
+  "block.copperdeco.weathered_copper_tile": "Застаріла плитка мідного блока",
+  "block.copperdeco.oxidized_copper_tile": "Окиснена плитка мідного блока",
+
+  "block.copperdeco.chiseled_copper_tile": "Плитка різьбленого мідного блока",
+  "block.copperdeco.exposed_chiseled_copper_tile": "Потемніла плитка різьбленого мідного блока",
+  "block.copperdeco.weathered_chiseled_copper_tile": "Застаріла плитка різьбленого мідного блока",
+  "block.copperdeco.oxidized_chiseled_copper_tile": "Окиснена плитка різьбленого мідного блока",
+
+  "block.copperdeco.waxed_copper_block_tile": "Вощена плитка мідного блока",
+  "block.copperdeco.waxed_exposed_copper_tile": "Вощена потемніла плитка мідного блока",
+  "block.copperdeco.waxed_weathered_copper_tile": "Вощена застаріла плитка мідного блока",
+  "block.copperdeco.waxed_oxidized_copper_tile": "Вощена окиснена плитка мідного блока",
+
+  "block.copperdeco.copper_grate_tile": "Плитка мідної решітки",
+  "block.copperdeco.exposed_copper_grate_tile": "Потемніла плитка мідної решітки",
+  "block.copperdeco.weathered_copper_grate_tile": "Застаріла плитка мідної решітки",
+  "block.copperdeco.oxidized_copper_grate_tile": "Окиснена плитка мідної решітки",
+
+  "block.copperdeco.waxed_copper_grate_tile": "Вощена плитка мідної решітки",
+  "block.copperdeco.waxed_exposed_copper_grate_tile": "Вощена потемніла плитка мідної решітки",
+  "block.copperdeco.waxed_weathered_copper_grate_tile": "Вощена застаріла плитка мідної решітки",
+  "block.copperdeco.waxed_oxidized_copper_grate_tile": "Вощена окиснена плитка мідної решітки",
+
+  "block.copperdeco.cut_copper_tile": "Плитка тесаного мідного блока",
+  "block.copperdeco.exposed_cut_copper_tile": "Потемніла плитка тесаного мідного блока",
+  "block.copperdeco.weathered_cut_copper_tile": "Застаріла плитка тесаного мідного блока",
+  "block.copperdeco.oxidized_cut_copper_tile": "Окиснена плитка тесаного мідного блока",
+
+  "block.copperdeco.waxed_cut_copper_tile": "Вощена плитка тесаного мідного блока",
+  "block.copperdeco.waxed_exposed_cut_copper_tile": "Вощена потемніла плитка тесаного мідного блока",
+  "block.copperdeco.waxed_weathered_cut_copper_tile": "Вощена застаріла плитка тесаного мідного блока",
+  "block.copperdeco.waxed_oxidized_cut_copper_tile": "Вощена окиснена плитка тесаного мідного блока",
+
+  "block.copperdeco.waxed_chiseled_copper_tile": "Вощена плитка різьбленого мідного блока",
+  "block.copperdeco.waxed_exposed_chiseled_copper_tile": "Вощена потемніла плитка різьбленого мідного блока",
+  "block.copperdeco.waxed_weathered_chiseled_copper_tile": "Вощена застаріла плитка різьбленого мідного блока",
+  "block.copperdeco.waxed_oxidized_chiseled_copper_tile": "Вощена окиснена плитка різьбленого мідного блока"
+}

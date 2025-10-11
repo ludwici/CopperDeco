@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "copperdeco:exposed_copper_tile"
+  },
+  "result": {
+    "count": 4,
+    "id": "copperdeco:exposed_copper_grate_tile"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "copperdeco:oxidized_copper_tile"
+  },
+  "result": {
+    "count": 4,
+    "id": "copperdeco:oxidized_chiseled_copper_tile"
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "itemGroup.copperdeco": "Copper Deco",
+
+  "block.copperdeco.copper_block_tile": "Плитка медного блока",
+  "block.copperdeco.exposed_copper_tile": "Потемневшая плитка медного блока",
+  "block.copperdeco.weathered_copper_tile": "Состаренная плитка медного блока",
+  "block.copperdeco.oxidized_copper_tile": "Окисленная плитка медного блока",
+
+  "block.copperdeco.chiseled_copper_tile": "Плитка точёного медного блока",
+  "block.copperdeco.exposed_chiseled_copper_tile": "Потемневшая плитка точёного медного блока",
+  "block.copperdeco.weathered_chiseled_copper_tile": "Состаренная плитка точёного медного блока",
+  "block.copperdeco.oxidized_chiseled_copper_tile": "Окисленная плитка точёного медного блока",
+
+  "block.copperdeco.waxed_copper_block_tile": "Вощённая плитка медного блока",
+  "block.copperdeco.waxed_exposed_copper_tile": "Вощённая потемневшая плитка медного блока",
+  "block.copperdeco.waxed_weathered_copper_tile": "Вощённая состаренная плитка медного блока",
+  "block.copperdeco.waxed_oxidized_copper_tile": "Вощённая окисленная плитка медного блока",
+
+  "block.copperdeco.copper_grate_tile": "Плитка медной решётки",
+  "block.copperdeco.exposed_copper_grate_tile": "Потемневшая плитка медной решётки",
+  "block.copperdeco.weathered_copper_grate_tile": "Состаренная плитка медной решётки",
+  "block.copperdeco.oxidized_copper_grate_tile": "Окисленная плитка медной решётки",
+
+  "block.copperdeco.waxed_copper_grate_tile": "Вощённая плитка медной решётки",
+  "block.copperdeco.waxed_exposed_copper_grate_tile": "Вощённая потемневшая плитка медной решётки",
+  "block.copperdeco.waxed_weathered_copper_grate_tile": "Вощённая состаренная плитка медной решётки",
+  "block.copperdeco.waxed_oxidized_copper_grate_tile": "Вощённая окисленная плитка медной решётки",
+
+  "block.copperdeco.cut_copper_tile": "Плитка резного медного блока",
+  "block.copperdeco.exposed_cut_copper_tile": "Потемневшая плитка резного медного блока",
+  "block.copperdeco.weathered_cut_copper_tile": "Состаренная плитка резного медного блока",
+  "block.copperdeco.oxidized_cut_copper_tile": "Окисленная плитка резного медного блока",
+
+  "block.copperdeco.waxed_cut_copper_tile": "Вощённая плитка резного медного блока",
+  "block.copperdeco.waxed_exposed_cut_copper_tile": "Вощённая потемневшая плитка резного медного блока",
+  "block.copperdeco.waxed_weathered_cut_copper_tile": "Вощённая состаренная плитка резного медного блока",
+  "block.copperdeco.waxed_oxidized_cut_copper_tile": "Вощённая окисленная плитка резного медного блока",
+
+  "block.copperdeco.waxed_chiseled_copper_tile": "Вощённая плитка точёного медного блока",
+  "block.copperdeco.waxed_exposed_chiseled_copper_tile": "Вощённая потемневшая плитка точёного медного блока",
+  "block.copperdeco.waxed_weathered_chiseled_copper_tile": "Вощённая состаренная плитка точёного медного блока",
+  "block.copperdeco.waxed_oxidized_chiseled_copper_tile": "Вощённая окисленная плитка точёного медного блока"
+}

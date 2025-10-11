@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "copperdeco:copper_block_tile",
+  "result": {
+    "count": 4,
+    "id": "copperdeco:copper_grate_tile"
+  }
+}

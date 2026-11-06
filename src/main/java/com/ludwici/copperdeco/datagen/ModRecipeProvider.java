@@ -6,8 +6,6 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.WeatheringCopperCollection;
-import net.neoforged.neoforge.registries.DeferredBlock;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -22,7 +20,7 @@ public class ModRecipeProvider extends RecipeProvider {
 
     @Override
     protected void buildRecipes() {
-        shaped(RecipeCategory.BUILDING_BLOCKS, COPPER_BLOCK_TILE.weathering().unaffected().get(), 4)
+        shaped(RecipeCategory.BUILDING_BLOCKS, COPPER_BLOCK_TILE.weathering().unaffected().get(), 1)
                 .pattern("##")
                 .pattern("##")
                 .define('#', Items.COPPER_INGOT)

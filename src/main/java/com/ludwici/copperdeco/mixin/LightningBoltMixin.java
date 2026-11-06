@@ -3,7 +3,6 @@ package com.ludwici.copperdeco.mixin;
 import com.ludwici.copperdeco.block.BaseCopperTileBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.LightningBolt;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
@@ -37,17 +36,23 @@ public abstract class LightningBoltMixin {
         }
     }
 
-    @Inject(method = "randomStepCleaningCopper", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "randomStepCleaningCopper", at = @At("RETURN"), cancellable = true)
     private static void cleaningCopper(Level level, BlockPos pos, CallbackInfoReturnable<Optional<BlockPos>> cir) {
+        if (cir.getReturnValue().isPresent()) {
+            return;
+        }
+
         for (BlockPos blockpos : BlockPos.randomInCube(level.getRandom(), 10, pos, 1)) {
             BlockState blockstate = level.getBlockState(blockpos);
             if (blockstate.getBlock() instanceof BaseCopperTileBlock) {
-                BaseCopperTileBlock.getPrevious(blockstate).ifPresent(p_147144_ -> level.setBlockAndUpdate(blockpos, p_147144_));
-                level.levelEvent(3002, blockpos, -1);
-                cir.setReturnValue(Optional.of(blockpos));
+                Optional<BlockState> previous = BaseCopperTileBlock.getPrevious(blockstate);
+                if (previous.isPresent()) {
+                    level.setBlockAndUpdate(blockpos, previous.get());
+                    level.levelEvent(3002, blockpos, -1);
+                    cir.setReturnValue(Optional.of(blockpos));
+                    return;
+                }
             }
         }
-
-        cir.setReturnValue(Optional.empty());
     }
 }

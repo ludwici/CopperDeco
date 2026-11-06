@@ -1,13 +1,22 @@
-[![curseforge](https://cf.way2muchnoise.eu/full_1362062_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants)
+# Copper Deco
 
+Decorative copper tiles for **Minecraft 26.2 / NeoForge**. Tiles can be placed on floors, walls and ceilings, and retain copper weathering and waxing interactions.
 
-![neoforge](https://github.com/thomasglasser/thomasglasser/blob/main/files/badges/cozy/supported/neoforge_64h.png?raw=true)
-![fabric](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/supported/fabric_64h.png)
+Features:
+- 32 copper tile variants: four block families, four oxidation stages, and waxed or unwaxed forms.
+- Oxidation over time, scraping with an axe, waxing with honeycomb, and lightning cleaning.
+- Crafting and stonecutting recipes, creative inventory entries and mining tags.
 
+## Requirements
 
-[![patreon-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_64h.png)](https://www.patreon.com/ludwici)
-[![kofi-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular-alt_64h.png)](https://ko-fi.com/ludwici)
+- Minecraft **26.2**
+- NeoForge **26.2.0.88** or newer within the 26.2 series
+- [Carpets Core](https://www.curseforge.com/minecraft/mc-mods/carpets-core) **1.3.1** (NeoForge build for 26.2)
 
-Check my other mods:
+## Build
 
-[![carpet-variants](https://i.imgur.com/G1XpmL4.png)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants) [![mob-loot-variants](https://i.imgur.com/n1X16BM.png)](https://www.curseforge.com/minecraft/mc-mods/mob-loot-variants) [![better-block-sounds-fork](https://i.imgur.com/epM9STT.png)](https://www.curseforge.com/minecraft/mc-mods/better-block-sounds-fork) [![slime-overhaul](https://i.postimg.cc/7LPXcWkr/so-logo-mini.png)](https://www.curseforge.com/minecraft/mc-mods/slime-overhaul) [![polyglot](https://i.postimg.cc/d3RCh0RZ/polyglot-mini.jpg)](https://www.curseforge.com/minecraft/mc-mods/polyglot)
+Use **Java 25** and run `./gradlew clean build`. The mod JAR will be created under `build/libs/`. To regenerate block models, loot tables, tags and recipes, run `./gradlew runData`.
+
+[![NeoForge 26.2 CI](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml/badge.svg?branch=26.2-neo)](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml)
+
+The GitHub Actions workflow builds the mod and validates data generation on pushes to `26.2-neo` and on pull requests targeting that branch.

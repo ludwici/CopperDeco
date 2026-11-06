@@ -61,8 +61,8 @@ public class BaseCopperTileBlock extends NoGravityVariantBlock implements Weathe
         BlockRegistry.ALL_TILES.forEach(tiles -> {
             var blocks = tiles.weathering();
             builder.put(blocks.unaffected(), blocks.exposed());
-            builder.put(blocks.exposed().get(), blocks.weathered());
-            builder.put(blocks.weathered().get(), blocks.oxidized());
+            builder.put(blocks.exposed(), blocks.weathered());
+            builder.put(blocks.weathered(), blocks.oxidized());
         });
         return builder.build();
     });

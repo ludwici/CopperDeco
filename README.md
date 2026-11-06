@@ -1,22 +1,18 @@
 # Copper Deco
 
-Decorative copper tiles for **Minecraft 26.2 / NeoForge**. Tiles can be placed on floors, walls and ceilings, and retain copper weathering and waxing interactions.
-
-Features:
-- 32 copper tile variants: four block families, four oxidation stages, and waxed or unwaxed forms.
-- Oxidation over time, scraping with an axe, waxing with honeycomb, and lightning cleaning.
-- Crafting and stonecutting recipes, creative inventory entries and mining tags.
+Fabric port of Copper Deco for Minecraft 26.2. Adds 32 decorative copper tiles (four block styles, four oxidation stages and waxed counterparts) for floors, walls and ceilings.
 
 ## Requirements
 
-- Minecraft **26.2**
-- NeoForge **26.2.0.88** or newer within the 26.2 series
-- [Carpets Core](https://www.curseforge.com/minecraft/mc-mods/carpets-core) **1.3.1** (NeoForge build for 26.2)
+- Minecraft 26.2
+- Fabric Loader 0.19.5 or newer
+- Fabric API 0.161.0+26.2
+- Carpets Core 1.3.1 for Fabric 26.2
 
 ## Build
 
-Use **Java 25** and run `./gradlew clean build`. The mod JAR will be created under `build/libs/`. To regenerate block models, loot tables, tags and recipes, run `./gradlew runData`.
+Use Java 25 and run `./gradlew clean build`. The finished JAR is under `build/libs/`.
 
-[![NeoForge 26.2 CI](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml/badge.svg?branch=26.2-neo)](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml)
+[![Fabric build](https://github.com/ludwici/CopperDeco/actions/workflows/build-fabric.yml/badge.svg?branch=26.2-fabric)](https://github.com/ludwici/CopperDeco/actions/workflows/build-fabric.yml)
 
-The GitHub Actions workflow builds the mod and validates data generation on pushes to `26.2-neo` and on pull requests targeting that branch.
+GitHub Actions compiles the mod, checks for all 32 tile resource sets, and uploads the JAR as an artifact.

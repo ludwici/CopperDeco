@@ -17,7 +17,7 @@ public class CopperDeco implements ModInitializer {
     public void onInitialize() {
         BlockRegistry.initialize();
         ResourceKey<CreativeModeTab> tabKey = ResourceKey.create(BuiltInRegistries.CREATIVE_MODE_TAB.key(), Identifier.fromNamespaceAndPath(MODID, "example_tab"));
-        CreativeModeTab tab = CreativeModeTab.builder()
+        CreativeModeTab tab = CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
                 .title(Component.translatable("itemGroup.copperdeco"))
                 .withTabsBefore(CreativeModeTabs.COMBAT)
                 .icon(() -> BlockRegistry.COPPER_BLOCK_TILE.weathering().unaffected().asItem().getDefaultInstance())

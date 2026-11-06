@@ -60,9 +60,9 @@ public class BaseCopperTileBlock extends NoGravityVariantBlock implements Weathe
         ImmutableBiMap.Builder<Block, Block> builder = ImmutableBiMap.builder();
         BlockRegistry.ALL_TILES.forEach(tiles -> {
             var blocks = tiles.weathering();
-            builder.put(blocks.unaffected().get(), blocks.exposed().get());
-            builder.put(blocks.exposed().get(), blocks.weathered().get());
-            builder.put(blocks.weathered().get(), blocks.oxidized().get());
+            builder.put(blocks.unaffected(), blocks.exposed());
+            builder.put(blocks.exposed().get(), blocks.weathered());
+            builder.put(blocks.weathered().get(), blocks.oxidized());
         });
         return builder.build();
     });
@@ -71,7 +71,7 @@ public class BaseCopperTileBlock extends NoGravityVariantBlock implements Weathe
 
     public static final Supplier<BiMap<Block, Block>> WAXABLES = Suppliers.memoize(() -> {
         ImmutableBiMap.Builder<Block, Block> builder = ImmutableBiMap.builder();
-        BlockRegistry.ALL_TILES.forEach(tiles -> tiles.zipUnwaxedWaxed((unwaxed, waxed) -> builder.put(unwaxed.get(), waxed.get())));
+        BlockRegistry.ALL_TILES.forEach(tiles -> tiles.zipUnwaxedWaxed((unwaxed, waxed) -> builder.put(unwaxed, waxed)));
         return builder.build();
     });
 

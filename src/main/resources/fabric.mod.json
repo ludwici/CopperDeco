@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "copperdeco",
+	"version": "${version}",
+	"name": "Copper Deco",
+	"description": "New copper tiles have been added that can be placed on walls and ceilings",
+	"authors": [
+		"ludwici"
+	],
+	"contact": {
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/copperdeco/copperdeco.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.ludwici.copperdeco.CopperDeco"
+		],
+		"client": [
+			"com.ludwici.copperdeco.CopperDecoClient"
+		]
+	},
+	"mixins": [
+		"copperdeco.mixins.json",
+		{
+			"config": "copperdeco.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.18.6",
+		"minecraft": "~26.1.1",
+		"java": ">=25",
+		"fabric-api": "*",
+		"carpetscore": ">=1.3.0"
+	}
+}

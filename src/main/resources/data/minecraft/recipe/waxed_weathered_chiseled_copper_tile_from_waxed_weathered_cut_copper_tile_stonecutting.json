@@ -1,0 +1,7 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "copperdeco:waxed_weathered_cut_copper_tile",
+  "result": {
+    "id": "copperdeco:waxed_weathered_chiseled_copper_tile"
+  }
+}

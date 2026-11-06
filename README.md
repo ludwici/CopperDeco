@@ -1,22 +1,29 @@
-# Copper Deco
+# Copper Deco — NeoForge 26.3
 
-Decorative copper tiles for **Minecraft 26.2 / NeoForge**. Tiles can be placed on floors, walls and ceilings, and retain copper weathering and waxing interactions.
-
-Features:
-- 32 copper tile variants: four block families, four oxidation stages, and waxed or unwaxed forms.
-- Oxidation over time, scraping with an axe, waxing with honeycomb, and lightning cleaning.
-- Crafting and stonecutting recipes, creative inventory entries and mining tags.
+Prepared source port from the working `26.2-neo` branch, retaining the **Carpets Core** dependency and all 32 copper tile variants. The original face-placement logic remains in `com.ludwici.carpetscore.api.block.NoGravityVariantBlock`; Copper Deco does not replace it.
 
 ## Requirements
 
-- Minecraft **26.2**
-- NeoForge **26.2.0.88** or newer within the 26.2 series
-- [Carpets Core](https://www.curseforge.com/minecraft/mc-mods/carpets-core) **1.3.1** (NeoForge build for 26.2)
+- Minecraft 26.3
+- NeoForge 26.3.0.99 (or a compatible later 26.3 build)
+- Java 25
+- A **NeoForge 26.3 build** of Carpets Core
 
-## Build
+## Set up the Carpets Core version
 
-Use **Java 25** and run `./gradlew clean build`. The mod JAR will be created under `build/libs/`. To regenerate block models, loot tables, tags and recipes, run `./gradlew runData`.
+When your 26.3 Carpets Core build is available, edit `gradle.properties`:
 
-[![NeoForge 26.2 CI](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml/badge.svg?branch=26.2-neo)](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml)
+```properties
+carpetcore_file_id=REPLACE_WITH_26_3_NEO_CURSEFORGE_FILE_ID
+carpetcore_version=1.3.1
+```
 
-The GitHub Actions workflow builds the mod and validates data generation on pushes to `26.2-neo` and on pull requests targeting that branch.
+Replace `carpetcore_file_id` with the numeric **CurseForge file ID** of the NeoForge 26.3 library artifact. Set `carpetcore_version` to its minimum supported **mod version**; this is used in `neoforge.mods.toml`. A CurseForge file ID and the library's semantic version are different values.
+
+The Gradle dependency and runtime dependency declaration both remain required. The code keeps the library's `NoGravityVariantBlock` inheritance. No separate geometry implementation is included.
+
+## Build and status
+
+After updating the library dependency, run `./gradlew clean build` locally. `runData` writes to `build/generated/datagen/` so that the committed block models, loot tables, recipes, and tags in `src/generated/resources/` are not overwritten.
+
+**This 26.3 branch is source-only and is not build-verified.** CI workflows are intentionally absent from the branch. If the updated Carpets Core API also changes, its corresponding methods may require additional adjustments.

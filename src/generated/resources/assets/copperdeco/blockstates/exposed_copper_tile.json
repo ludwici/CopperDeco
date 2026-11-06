@@ -1,0 +1,65 @@
+{
+  "multipart": [
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile"
+      },
+      "when": {
+        "down": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile",
+        "uvlock": true,
+        "x": 90,
+        "y": 270
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile",
+        "uvlock": true,
+        "x": 90
+      },
+      "when": {
+        "south": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile",
+        "uvlock": true,
+        "x": 90,
+        "y": 90
+      },
+      "when": {
+        "west": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile",
+        "uvlock": true,
+        "x": 180
+      },
+      "when": {
+        "up": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "copperdeco:block/exposed_copper_tile",
+        "uvlock": true,
+        "x": 90,
+        "y": 180
+      },
+      "when": {
+        "north": "true"
+      }
+    }
+  ]
+}

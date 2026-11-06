@@ -34,14 +34,15 @@ dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-    implementation "curse.maven:carpets-core-1140721:8356113"
+    implementation "curse.maven:carpets-core-1140721:${project.carpetcore_file_id}"
 }
 
 processResources {
     inputs.property "version", project.version
+    inputs.property "carpetcore_version", project.carpetcore_version
 
     filesMatching("fabric.mod.json") {
-        expand "version": inputs.properties.version
+        expand "version": inputs.properties.version, "carpetcore_version": inputs.properties.carpetcore_version
     }
 }
 

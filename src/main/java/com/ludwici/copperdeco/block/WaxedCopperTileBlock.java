@@ -33,7 +33,7 @@ public class WaxedCopperTileBlock extends NoGravityVariantBlock {
         if (stack.is(ItemTags.AXES)) {
             BlockState waxed = Optional.ofNullable(INVERSE_WAX.get().get(state.getBlock())).map(b -> b.withPropertiesOf(state)).orElse(null);
             if (waxed != null) {
-                level.playSound(player, pos, SoundEvents.AXE_WAX_OFF, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(player, pos, SoundEvents.AXE_WAX_OFF.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.levelEvent(player, 3004, pos, 0);
                 if (player instanceof ServerPlayer serverPlayer) {
                     CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemStack);

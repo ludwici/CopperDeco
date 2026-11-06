@@ -6,8 +6,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.ludwici.carpetscore.api.block.NoGravityVariantBlock;
 import com.ludwici.copperdeco.registry.BlockRegistry;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,16 +43,6 @@ import static com.ludwici.copperdeco.registry.BlockRegistry.*;
 
 public class BaseCopperTileBlock extends NoGravityVariantBlock implements WeatheringCopper {
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
-
-    public static final MapCodec<BaseCopperTileBlock> CODEC = RecordCodecBuilder.mapCodec(
-            p_308850_ -> p_308850_.group(WeatheringCopper.WeatherState.CODEC.fieldOf("weathering_state").forGetter(ChangeOverTimeBlock::getAge), propertiesCodec())
-                    .apply(p_308850_, BaseCopperTileBlock::new)
-    );
-
-    @Override
-    public MapCodec<BaseCopperTileBlock> codec() {
-        return CODEC;
-    }
 
     public static final Supplier<BiMap<Block, Block>> NEXT_BY_BLOCK = Suppliers.memoize(() -> {
         ImmutableBiMap.Builder<Block, Block> builder = ImmutableBiMap.builder();
@@ -172,7 +160,7 @@ public class BaseCopperTileBlock extends NoGravityVariantBlock implements Weathe
         if (stack.is(ItemTags.AXES)) {
             BlockState scraped = getPrevious(state).orElse(null);
             if (scraped != null) {
-                level.playSound(player, pos, SoundEvents.AXE_SCRAPE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.playSound(player, pos, SoundEvents.AXE_SCRAPE.value(), SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.levelEvent(player, 3005, pos, 0);
                 if (player instanceof ServerPlayer serverPlayer) {
                     CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, pos, itemStack);

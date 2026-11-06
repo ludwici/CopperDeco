@@ -7,7 +7,7 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.stream.Collectors;
 
-import static com.ludwici.copperdeco.registry.BlockRegistry.*;
+import static com.ludwici.copperdeco.registry.BlockRegistry.BLOCKS;
 
 public class ModLootTableGenerator extends LootTableHelper {
     protected ModLootTableGenerator(HolderLookup.Provider provider) {
@@ -16,45 +16,7 @@ public class ModLootTableGenerator extends LootTableHelper {
 
     @Override
     protected void generate() {
-//        createSelfVariantItemTable(COPPER_BLOCK_TILE);
-//        createSelfVariantItemTable(CHISELED_COPPER_BLOCK_TILE);
-//        createSelfVariantItemTable(COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(CUT_COPPER_TILE);
-//
-//        createSelfVariantItemTable(EXPOSED_COPPER_TILE);
-//        createSelfVariantItemTable(EXPOSED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(EXPOSED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(EXPOSED_CUT_COPPER_TILE);
-//
-//        createSelfVariantItemTable(WEATHERED_COPPER_TILE);
-//        createSelfVariantItemTable(WEATHERED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(WEATHERED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(WEATHERED_CUT_COPPER_TILE);
-//
-//        createSelfVariantItemTable(OXIDIZED_COPPER_TILE);
-//        createSelfVariantItemTable(OXIDIZED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(OXIDIZED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(OXIDIZED_CUT_COPPER_TILE);
-//
-//        createSelfVariantItemTable(WAXED_COPPER_BLOCK_TILE);
-//        createSelfVariantItemTable(WAXED_EXPOSED_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_WEATHERED_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_OXIDIZED_COPPER_TILE);
-//
-//        createSelfVariantItemTable(WAXED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_EXPOSED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_WEATHERED_CHISELED_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_OXIDIZED_CHISELED_COPPER_TILE);
-//
-//        createSelfVariantItemTable(WAXED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(WAXED_EXPOSED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(WAXED_WEATHERED_COPPER_GRATE_TILE);
-//        createSelfVariantItemTable(WAXED_OXIDIZED_COPPER_GRATE_TILE);
-//
-//        createSelfVariantItemTable(WAXED_CUT_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_EXPOSED_CUT_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_WEATHERED_CUT_COPPER_TILE);
-//        createSelfVariantItemTable(WAXED_OXIDIZED_CUT_COPPER_TILE);
+        BLOCKS.getEntries().forEach(block -> createSelfVariantItemTable(block.value()));
     }
 
     @Override

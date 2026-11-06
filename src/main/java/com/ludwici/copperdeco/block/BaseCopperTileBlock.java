@@ -5,6 +5,7 @@ import com.google.common.base.Suppliers;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.ludwici.carpetscore.api.block.NoGravityVariantBlock;
+import com.ludwici.copperdeco.registry.BlockRegistry;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
@@ -55,53 +56,26 @@ public class BaseCopperTileBlock extends NoGravityVariantBlock implements Weathe
         return CODEC;
     }
 
-    public static final Supplier<BiMap<Block, Block>> NEXT_BY_BLOCK = Suppliers.memoize(
-            () -> ImmutableBiMap.<Block, Block>builder()
-//                    .put(COPPER_BLOCK_TILE.get(), EXPOSED_COPPER_TILE.get())
-//                    .put(EXPOSED_COPPER_TILE.get(), WEATHERED_COPPER_TILE.get())
-//                    .put(WEATHERED_COPPER_TILE.get(), OXIDIZED_COPPER_TILE.get())
-//
-//                    .put(CHISELED_COPPER_BLOCK_TILE.get(), EXPOSED_CHISELED_COPPER_TILE.get())
-//                    .put(EXPOSED_CHISELED_COPPER_TILE.get(), WEATHERED_CHISELED_COPPER_TILE.get())
-//                    .put(WEATHERED_CHISELED_COPPER_TILE.get(), OXIDIZED_CHISELED_COPPER_TILE.get())
-//
-//                    .put(COPPER_GRATE_TILE.get(), EXPOSED_COPPER_GRATE_TILE.get())
-//                    .put(EXPOSED_COPPER_GRATE_TILE.get(), WEATHERED_COPPER_GRATE_TILE.get())
-//                    .put(WEATHERED_COPPER_GRATE_TILE.get(), OXIDIZED_COPPER_GRATE_TILE.get())
-//
-//                    .put(CUT_COPPER_TILE.get(), EXPOSED_CUT_COPPER_TILE.get())
-//                    .put(EXPOSED_CUT_COPPER_TILE.get(), WEATHERED_CUT_COPPER_TILE.get())
-//                    .put(WEATHERED_CUT_COPPER_TILE.get(), OXIDIZED_CUT_COPPER_TILE.get())
-                    .build()
-    );
+    public static final Supplier<BiMap<Block, Block>> NEXT_BY_BLOCK = Suppliers.memoize(() -> {
+        ImmutableBiMap.Builder<Block, Block> builder = ImmutableBiMap.builder();
+        BlockRegistry.ALL_TILES.forEach(tiles -> {
+            var blocks = tiles.weathering();
+            builder.put(blocks.unaffected().get(), blocks.exposed().get());
+            builder.put(blocks.exposed().get(), blocks.weathered().get());
+            builder.put(blocks.weathered().get(), blocks.oxidized().get());
+        });
+        return builder.build();
+    });
 
     public static final Supplier<BiMap<Block, Block>> PREVIOUS_BY_BLOCK = Suppliers.memoize(() -> NEXT_BY_BLOCK.get().inverse());
 
-    public static final Supplier<BiMap<Block, Block>> WAXABLES = Suppliers.memoize(
-            () -> ImmutableBiMap.<Block, Block>builder()
-//                    .put(COPPER_BLOCK_TILE.get(), WAXED_COPPER_BLOCK_TILE.get())
-//                    .put(EXPOSED_COPPER_TILE.get(), WAXED_EXPOSED_COPPER_TILE.get())
-//                    .put(WEATHERED_COPPER_TILE.get(), WAXED_WEATHERED_COPPER_TILE.get())
-//                    .put(OXIDIZED_COPPER_TILE.get(), WAXED_OXIDIZED_COPPER_TILE.get())
-//
-//                    .put(CHISELED_COPPER_BLOCK_TILE.get(), WAXED_CHISELED_COPPER_TILE.get())
-//                    .put(EXPOSED_CHISELED_COPPER_TILE.get(), WAXED_EXPOSED_CHISELED_COPPER_TILE.get())
-//                    .put(WEATHERED_CHISELED_COPPER_TILE.get(), WAXED_WEATHERED_CHISELED_COPPER_TILE.get())
-//                    .put(OXIDIZED_CHISELED_COPPER_TILE.get(), WAXED_OXIDIZED_CHISELED_COPPER_TILE.get())
-//
-//                    .put(COPPER_GRATE_TILE.get(), WAXED_COPPER_GRATE_TILE.get())
-//                    .put(EXPOSED_COPPER_GRATE_TILE.get(), WAXED_EXPOSED_COPPER_GRATE_TILE.get())
-//                    .put(WEATHERED_COPPER_GRATE_TILE.get(), WAXED_WEATHERED_COPPER_GRATE_TILE.get())
-//                    .put(OXIDIZED_COPPER_GRATE_TILE.get(), WAXED_OXIDIZED_COPPER_GRATE_TILE.get())
-//
-//                    .put(CUT_COPPER_TILE.get(), WAXED_CUT_COPPER_TILE.get())
-//                    .put(EXPOSED_CUT_COPPER_TILE.get(), WAXED_EXPOSED_CUT_COPPER_TILE.get())
-//                    .put(WEATHERED_CUT_COPPER_TILE.get(), WAXED_WEATHERED_CUT_COPPER_TILE.get())
-//                    .put(OXIDIZED_CUT_COPPER_TILE.get(), WAXED_OXIDIZED_CUT_COPPER_TILE.get())
-                    .build()
-    );
+    public static final Supplier<BiMap<Block, Block>> WAXABLES = Suppliers.memoize(() -> {
+        ImmutableBiMap.Builder<Block, Block> builder = ImmutableBiMap.builder();
+        BlockRegistry.ALL_TILES.forEach(tiles -> tiles.zipUnwaxedWaxed((unwaxed, waxed) -> builder.put(unwaxed.get(), waxed.get())));
+        return builder.build();
+    });
 
-    static Supplier<BiMap<Block, Block>> INVERSE_WAX = Suppliers.memoize(() -> WAXABLES.get().inverse());
+    public static final Supplier<BiMap<Block, Block>> INVERSE_WAX = Suppliers.memoize(() -> WAXABLES.get().inverse());
 
     private final WeatheringCopper.WeatherState weatherState;
 

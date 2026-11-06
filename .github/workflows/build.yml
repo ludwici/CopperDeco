@@ -38,6 +38,27 @@ jobs:
       - name: Build mod
         run: ./gradlew clean build --no-daemon --stacktrace
 
+      - name: Verify packaged resources
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          jars = list(Path("build/libs").glob("copperdeco-neo-26.2-*.jar"))
+          assert len(jars) == 1, f"Expected one mod JAR, found: {jars}"
+          with ZipFile(jars[0]) as jar:
+              files = set(jar.namelist())
+              for folder in (
+                  "assets/copperdeco/blockstates/",
+                  "assets/copperdeco/items/",
+                  "data/copperdeco/loot_table/blocks/",
+              ):
+                  count = sum(path.startswith(folder) and path.endswith(".json") for path in files)
+                  assert count >= 32, f"{folder}: expected 32 tile resources, found {count}"
+              assert "META-INF/neoforge.mods.toml" in files, "Missing NeoForge metadata"
+          print(f"Validated copper tile assets in {jars[0]}")
+          PY
+
       - name: Upload mod JAR
         if: success()
         uses: actions/upload-artifact@v4

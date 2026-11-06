@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": "copperdeco:waxed_weathered_copper_tile",
+  "result": {
+    "count": 4,
+    "id": "copperdeco:waxed_weathered_copper_grate_tile"
+  }
+}

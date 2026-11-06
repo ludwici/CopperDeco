@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "minecraft:honeycomb",
+    "copperdeco:copper_grate_tile"
+  ],
+  "result": {
+    "id": "copperdeco:waxed_copper_grate_tile"
+  }
+}

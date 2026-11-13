@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "copperdeco:waxed_exposed_cut_copper_tile"
+        "recipes": "copperdeco:waxed_exposed_cut_copper_tile"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

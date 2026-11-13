@@ -13,7 +13,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "copperdeco:copper_block_tile"
+        "recipes": "copperdeco:copper_block_tile"
       },
       "trigger": "minecraft:recipe_unlocked"
     }

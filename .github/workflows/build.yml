@@ -31,17 +31,28 @@ jobs:
         run: |
           ./gradlew runData --no-daemon --stacktrace
           python3 - <<'PY'
+          import json
           from pathlib import Path
 
           root = Path("build/generated/datagen")
           for folder, minimum in (("data/copperdeco/recipe", 1), ("data/copperdeco/loot_table/blocks", 32)):
               generated = list((root / folder).glob("*.json"))
               assert len(generated) >= minimum, f"{folder}: expected >= {minimum} generated files, found {len(generated)}"
-          print("Validated generated 26.3 recipes and 32 block loot tables")
+          advancements = list((root / "data").glob("*/advancement/recipes/**/*.json"))
+          assert len(advancements) >= 49, f"Expected at least 49 generated advancements, found {len(advancements)}"
+          for path in advancements:
+              doc = json.loads(path.read_text(encoding="utf-8"))
+              for criterion in doc.get("criteria", {}).values():
+                  if criterion.get("trigger") == "minecraft:recipe_unlocked":
+                      conditions = criterion["conditions"]
+                      assert isinstance(conditions.get("recipes"), str) and "recipe" not in conditions, f"Invalid 26.3 recipe-unlocked trigger: {path}"
+          print("Validated generated 26.3 recipes, advancements and 32 block loot tables")
           PY
       - name: Validate packed resources and Carpets Core metadata
         run: |
           python3 - <<'PY'
+          import json
+          import re
           from pathlib import Path
           from struct import unpack
           from zipfile import ZipFile
@@ -68,8 +79,38 @@ jobs:
               for folder in ("assets/copperdeco/blockstates/", "assets/copperdeco/items/", "data/copperdeco/loot_table/blocks/"):
                   count = sum(name.startswith(folder) and name.endswith(".json") for name in files)
                   assert count >= 32, f"{folder}: found only {count} JSON resources"
+              advancements = sorted(name for name in files if re.fullmatch(r"data/(?:minecraft|copperdeco)/advancement/recipes/.+[.]json", name))
+              assert len(advancements) == 49, f"Expected 49 packaged recipe advancements, found {len(advancements)}"
+              for name in advancements:
+                  advancement = json.loads(jar.read(name))
+                  for criterion in advancement["criteria"].values():
+                      if criterion["trigger"] == "minecraft:recipe_unlocked":
+                          conditions = criterion["conditions"]
+                          assert "recipe" not in conditions, f"Outdated 26.2 trigger schema in {name}"
+                          assert isinstance(conditions.get("recipes"), str), f"Invalid 26.3 recipe-unlocked schema in {name}"
+                          assert conditions["recipes"] in advancement["rewards"]["recipes"], f"Recipe mismatch in {name}"
           print(f"Verified {jars[0]} and Carpets Core NeoForge 26.3 dependency")
           PY
+      - name: Smoke-test NeoForge server world loading
+        run: |
+          mkdir -p run
+          echo eula=true > run/eula.txt
+          set +e
+          timeout --signal=TERM --kill-after=10s 150s ./gradlew runServer --no-daemon --stacktrace 2>&1 | tee /tmp/copperdeco-server-smoke.log
+          status=${PIPESTATUS[0]}
+          set -e
+          if grep -qE 'Registry loading errors|Failed to load registries due to errors' /tmp/copperdeco-server-smoke.log; then
+            echo "World registries failed to load"
+            exit 1
+          fi
+          if ! grep -qF 'Done (' /tmp/copperdeco-server-smoke.log; then
+            echo "Dedicated server did not finish starting"
+            exit 1
+          fi
+          if [ "$status" -ne 0 ] && [ "$status" -ne 124 ]; then
+            echo "Server command failed with status $status"
+            exit "$status"
+          fi
       - name: Upload NeoForge JAR
         uses: actions/upload-artifact@v4
         with:

@@ -3,20 +3,31 @@
   "id": "copperdeco",
   "version": "${version}",
   "name": "Copper Deco",
-  "description": "New copper tiles that can be placed on walls and ceilings",
-  "authors": ["ludwici"],
+  "description": "Adds 32 decorative copper tile variants for floors, walls and ceilings, with oxidation, waxing and scraping.",
+  "authors": [
+    "ludwici"
+  ],
   "license": "MIT",
   "icon": "copperdeco.png",
   "environment": "*",
   "entrypoints": {
-    "main": ["com.ludwici.copperdeco.CopperDeco"]
+    "main": [
+      "com.ludwici.copperdeco.CopperDeco"
+    ]
   },
-  "mixins": ["copperdeco.mixins.json"],
+  "mixins": [
+    "copperdeco.mixins.json"
+  ],
   "depends": {
     "fabricloader": ">=0.19.5",
     "minecraft": "26.3",
     "java": ">=25",
     "fabric-api": "*",
     "carpetscore": ">=${carpetcore_version}"
+  },
+  "contact": {
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/copper-deco",
+    "sources": "https://github.com/ludwici/CopperDeco",
+    "issues": "https://github.com/ludwici/CopperDeco/issues"
   }
 }

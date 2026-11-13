@@ -23,6 +23,12 @@ Replace `carpetcore_file_id` with the numeric **CurseForge file ID** for the Fab
 
 The Gradle dependency remains required, and the source continues to use the library's `NoGravityVariantBlock`. No internal geometry replacement has been added.
 
+## Links
+
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/copper-deco) — mod downloads
+- [Source code](https://github.com/ludwici/CopperDeco) — GitHub repository
+- [Issue tracker](https://github.com/ludwici/CopperDeco/issues) — bug reports and requests
+
 ## Build and status
 
 After updating these properties, build locally using `./gradlew clean build`. Resources are packaged from `src/generated/resources`.

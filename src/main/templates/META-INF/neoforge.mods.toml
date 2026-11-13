@@ -1,5 +1,7 @@
 modLoader="javafml"
 license="${mod_license}"
+licenseURL="${mod_license_url}"
+issueTrackerURL="${mod_issues_url}"
 
 [[mods]]
 modId="${mod_id}"
@@ -8,7 +10,8 @@ displayName="${mod_name}"
 displayURL="${mod_url}"
 authors="${mod_authors}"
 description='''${mod_description}'''
-logoFile = "${mod_id}.png"
+iconFile="${mod_id}.png"
+iconBlur=true
 
 [[mixins]]
 config="${mod_id}.mixins.json"

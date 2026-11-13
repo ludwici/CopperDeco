@@ -22,6 +22,12 @@ Replace `carpetcore_file_id` with the numeric **CurseForge file ID** of the NeoF
 
 The Gradle dependency and runtime dependency declaration both remain required. The code keeps the library's `NoGravityVariantBlock` inheritance. No separate geometry implementation is included.
 
+## Links
+
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/copper-deco) — mod downloads
+- [Source code](https://github.com/ludwici/CopperDeco) — GitHub repository
+- [Issue tracker](https://github.com/ludwici/CopperDeco/issues) — bug reports and requests
+
 ## Build and status
 
 After updating the library dependency, run `./gradlew clean build` locally. `runData` writes to `build/generated/datagen/` so that the committed block models, loot tables, recipes, and tags in `src/generated/resources/` are not overwritten.

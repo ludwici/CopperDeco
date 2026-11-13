@@ -13,10 +13,16 @@ Features:
 - NeoForge **26.2.0.88** or newer within the 26.2 series
 - [Carpets Core](https://www.curseforge.com/minecraft/mc-mods/carpets-core) **1.3.1** (NeoForge build for 26.2)
 
+## Links
+
+- [CurseForge](https://www.curseforge.com/minecraft/mc-mods/copper-deco) — mod page and downloads
+- [Source code](https://github.com/ludwici/CopperDeco) — repository
+- [Issue tracker](https://github.com/ludwici/CopperDeco/issues) — bug reports and feature requests
+
 ## Build
 
 Use **Java 25** and run `./gradlew clean build`. The mod JAR will be created under `build/libs/`. To regenerate block models, loot tables, tags and recipes, run `./gradlew runData`.
 
 [![NeoForge 26.2 CI](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml/badge.svg?branch=26.2-neo)](https://github.com/ludwici/CopperDeco/actions/workflows/build.yml)
 
-The GitHub Actions workflow builds the mod and validates data generation on pushes to `26.2-neo` and on pull requests targeting that branch.
+The GitHub Actions workflow builds the mod, validates data generation, and checks that the NeoForge `iconFile` and homepage/issue-tracker links resolve correctly in the packaged JAR.

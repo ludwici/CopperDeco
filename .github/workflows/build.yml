@@ -42,7 +42,10 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
+          from struct import unpack
+          from urllib.parse import urlparse
           from zipfile import ZipFile
+          import tomllib
 
           jars = list(Path("build/libs").glob("copperdeco-neo-26.2-*.jar"))
           assert len(jars) == 1, f"Expected one mod JAR, found: {jars}"
@@ -56,6 +59,25 @@ jobs:
                   count = sum(path.startswith(folder) and path.endswith(".json") for path in files)
                   assert count >= 32, f"{folder}: expected 32 tile resources, found {count}"
               assert "META-INF/neoforge.mods.toml" in files, "Missing NeoForge metadata"
+              metadata = tomllib.loads(jar.read("META-INF/neoforge.mods.toml").decode("utf-8"))
+              mod = next(m for m in metadata["mods"] if m["modId"] == "copperdeco")
+              assert "logoFile" not in mod, "Deprecated logoFile does not populate the mod list icon"
+              assert mod.get("iconFile") == "copperdeco.png", "NeoForge requires iconFile for the mod list"
+              assert mod.get("iconBlur") is True, "Expected smooth logo scaling"
+              icon = mod["iconFile"]
+              assert icon in files, f"Missing mod list icon in JAR root: {icon}"
+              png = jar.read(icon)
+              assert png[:8] == b"\\x89PNG\\r\\n\\x1a\\n", "Icon is not a PNG"
+              assert png[12:16] == b"IHDR", "Icon has no PNG IHDR chunk"
+              width, height = unpack(">II", png[16:24])
+              assert width == height and width > 0, f"Expected a square mod icon, got {width}x{height}"
+              for url in (mod["displayURL"], metadata["issueTrackerURL"], metadata["licenseURL"]):
+                  parsed = urlparse(url)
+                  assert parsed.scheme == "https" and parsed.netloc, f"Invalid metadata URL: {url}"
+              assert mod["displayURL"] == "https://www.curseforge.com/minecraft/mc-mods/copper-deco"
+              assert metadata["issueTrackerURL"] == "https://github.com/ludwici/CopperDeco/issues"
+              assert metadata["licenseURL"] == "https://opensource.org/license/mit"
+              print(f"Verified NeoForge icon: {icon} ({width}x{height})")
           print(f"Validated copper tile assets in {jars[0]}")
           PY
 

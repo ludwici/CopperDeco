@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'net.neoforged.moddev' version '2.0.148'
     id 'idea'
 }
@@ -123,5 +124,25 @@ idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+publishMods {
+    file = tasks.named("jar", Jar).flatMap { it.archiveFile }
+    changelog = "Added Minecraft 26.3 support; fixed recipe advancements and updated NeoForge metadata. Requires Carpets Core 1.3.1."
+    version = "${minecraft_version}-${mod_version}"
+    displayName = tasks.named("jar", Jar).flatMap { it.archiveFile }.map { it.asFile.name }
+    type = STABLE
+    modLoaders.add("neoforge")
+    dryRun = providers.gradleProperty("publishDryRun").map { it.toBoolean() }.orElse(false)
+
+    curseforge {
+        projectId = "1362062"
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        minecraftVersions.add(minecraft_version)
+        javaVersions.add(JavaVersion.VERSION_25)
+        client = true
+        server = true
+        requires("carpets-core")
     }
 }

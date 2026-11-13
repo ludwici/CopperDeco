@@ -1,0 +1,63 @@
+name: Publish Copper Deco NeoForge 26.3 to CurseForge
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '26.3-neo'
+    paths:
+      - '.github/RELEASE_26_3'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: copperdeco-neoforge-26.3-curseforge
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build release
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - name: Verify artifact and metadata
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import json
+          import tomllib
+
+          jars = list(Path("build/libs").glob("copperdeco-neo-26.3-1.0.3.jar"))
+          assert len(jars) == 1, f"Unexpected release JARs: {jars}"
+          with ZipFile(jars[0]) as jar:
+              files = jar.namelist()
+              meta = tomllib.loads(jar.read("META-INF/neoforge.mods.toml").decode("utf-8"))
+              assert any(mod["modId"] == "copperdeco" and mod["version"] == "1.0.3" for mod in meta["mods"])
+              assert any(dep["modId"] == "carpetscore" and dep["type"] == "required" for dep in meta["dependencies"]["copperdeco"])
+              recipes = [name for name in files if name.endswith(".json") and "/advancement/recipes/" in name]
+              assert len(recipes) == 49, f"Expected 49 recipe advancements, got {len(recipes)}"
+              for name in recipes:
+                  data = json.loads(jar.read(name))
+                  for criterion in data.get("criteria", {}).values():
+                      if criterion.get("trigger") == "minecraft:recipe_unlocked":
+                          assert isinstance(criterion["conditions"].get("recipes"), str)
+                          assert "recipe" not in criterion["conditions"]
+          print(f"Release verified: {jars[0]}")
+          PY
+      - name: Publish only to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          test -n "$CURSEFORGE_TOKEN" || { echo "Missing CURSEFORGE_TOKEN"; exit 1; }
+          ./gradlew publishCurseforge --no-daemon --stacktrace

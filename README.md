@@ -11,14 +11,14 @@ Prepared source port from the working `26.2-neo` branch, retaining the **Carpets
 
 ## Set up the Carpets Core version
 
-When your 26.3 Carpets Core build is available, edit `gradle.properties`:
+The 26.3 dependency is now pinned to the [Carpets Core NeoForge 26.3 CurseForge file](https://www.curseforge.com/minecraft/mc-mods/carpets-core/files/9578858):
 
 ```properties
-carpetcore_file_id=REPLACE_WITH_26_3_NEO_CURSEFORGE_FILE_ID
+carpetcore_file_id=9578858
 carpetcore_version=1.3.1
 ```
 
-Replace `carpetcore_file_id` with the numeric **CurseForge file ID** of the NeoForge 26.3 library artifact. Set `carpetcore_version` to its minimum supported **mod version**; this is used in `neoforge.mods.toml`. A CurseForge file ID and the library's semantic version are different values.
+Update the file ID and minimum version only when publishing a newer Carpets Core build; CurseForge file IDs and mod versions are different values.
 
 The Gradle dependency and runtime dependency declaration both remain required. The code keeps the library's `NoGravityVariantBlock` inheritance. No separate geometry implementation is included.
 
@@ -32,4 +32,4 @@ The Gradle dependency and runtime dependency declaration both remain required. T
 
 After updating the library dependency, run `./gradlew clean build` locally. `runData` writes to `build/generated/datagen/` so that the committed block models, loot tables, recipes, and tags in `src/generated/resources/` are not overwritten.
 
-**This 26.3 branch is source-only and is not build-verified.** CI workflows are intentionally absent from the branch. If the updated Carpets Core API also changes, its corresponding methods may require additional adjustments.
+GitHub Actions builds this branch with the NeoForge 26.3 Carpets Core JAR from CurseForge and checks the packaged metadata and resources. The build result is reported by CI. If the Carpets Core API changes later, matching source adjustments may be required.

@@ -1,0 +1,70 @@
+name: Build Copper Deco NeoForge 26.3
+
+on:
+  push:
+    branches:
+      - 26.3-neo
+  pull_request:
+    branches:
+      - 26.3-neo
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build mod
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - name: Validate packed resources and Carpets Core metadata
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          from zipfile import ZipFile
+          import tomllib
+
+          props = Path("gradle.properties").read_text()
+          assert "carpetcore_file_id=9578858" in props
+          jars = [p for p in Path("build/libs").glob("copperdeco-neo-26.3-*.jar") if not any(s in p.stem for s in ("-sources", "-dev", "-javadoc"))]
+          assert len(jars) == 1, f"Expected exactly one NeoForge JAR: {jars}"
+          with ZipFile(jars[0]) as jar:
+              files = set(jar.namelist())
+              metadata = tomllib.loads(jar.read("META-INF/neoforge.mods.toml").decode("utf-8"))
+              mod = next(m for m in metadata["mods"] if m["modId"] == "copperdeco")
+              assert mod["version"] == "1.0.3"
+              assert mod["iconFile"] == "copperdeco.png"
+              assert mod["displayURL"] == "https://www.curseforge.com/minecraft/mc-mods/copper-deco"
+              assert metadata["issueTrackerURL"] == "https://github.com/ludwici/CopperDeco/issues"
+              assert "logoFile" not in mod
+              deps = metadata["dependencies"]["copperdeco"]
+              assert any(d["modId"] == "carpetscore" and d["type"] == "required" and d["versionRange"] == "[1.3.1,)" for d in deps)
+              icon = jar.read(mod["iconFile"])
+              assert icon[:8] == bytes.fromhex("89504e470d0a1a0a")
+              assert unpack(">II", icon[16:24]) == (400, 400)
+              for folder in ("assets/copperdeco/blockstates/", "assets/copperdeco/items/", "data/copperdeco/loot_table/blocks/"):
+                  count = sum(name.startswith(folder) and name.endswith(".json") for name in files)
+                  assert count >= 32, f"{folder}: found only {count} JSON resources"
+          print(f"Verified {jars[0]} and Carpets Core NeoForge 26.3 dependency")
+          PY
+      - name: Upload NeoForge JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: copperdeco-neoforge-26.3
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+            !build/libs/*-dev.jar
+            !build/libs/*-javadoc.jar
+          if-no-files-found: error

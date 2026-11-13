@@ -2,11 +2,6 @@ name: Publish Copper Deco 26.2 NeoForge
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - 26.2-neo
-    paths:
-      - '.github/RELEASE_26_2'
 
 permissions:
   contents: read

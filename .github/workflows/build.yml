@@ -1,0 +1,69 @@
+name: Build Copper Deco Fabric 26.3
+
+on:
+  push:
+    branches:
+      - 26.3-fabric
+  pull_request:
+    branches:
+      - 26.3-fabric
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build mod
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - name: Validate packed resources and Carpets Core metadata
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from struct import unpack
+          from zipfile import ZipFile
+          import json
+
+          props = Path("gradle.properties").read_text()
+          assert "carpetcore_file_id=9578816" in props
+          jars = [p for p in Path("build/libs").glob("copperdeco-fabric-26.3-*.jar") if not any(s in p.stem for s in ("-sources", "-dev", "-javadoc"))]
+          assert len(jars) == 1, f"Expected exactly one Fabric JAR: {jars}"
+          with ZipFile(jars[0]) as jar:
+              files = set(jar.namelist())
+              metadata = json.loads(jar.read("fabric.mod.json").decode("utf-8"))
+              assert metadata["id"] == "copperdeco"
+              assert metadata["version"] == "1.0.3"
+              assert metadata["icon"] == "copperdeco.png"
+              assert metadata["depends"]["minecraft"] == "26.3"
+              assert metadata["depends"]["carpetscore"] == ">=1.3.1"
+              assert metadata["contact"]["homepage"] == "https://www.curseforge.com/minecraft/mc-mods/copper-deco"
+              assert metadata["contact"]["issues"] == "https://github.com/ludwici/CopperDeco/issues"
+              icon = jar.read(metadata["icon"])
+              assert icon[:8] == bytes.fromhex("89504e470d0a1a0a")
+              assert unpack(">II", icon[16:24]) == (400, 400)
+              for folder in ("assets/copperdeco/blockstates/", "assets/copperdeco/items/", "data/copperdeco/loot_table/blocks/"):
+                  count = sum(name.startswith(folder) and name.endswith(".json") for name in files)
+                  assert count >= 32, f"{folder}: found only {count} JSON resources"
+          print(f"Verified {jars[0]} and Carpets Core Fabric 26.3 dependency")
+          PY
+      - name: Upload Fabric JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: copperdeco-fabric-26.3
+          path: |
+            build/libs/*.jar
+            !build/libs/*-sources.jar
+            !build/libs/*-dev.jar
+            !build/libs/*-javadoc.jar
+          if-no-files-found: error

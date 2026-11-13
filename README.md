@@ -12,14 +12,14 @@ Source-only port based on the working `26.2-fabric` branch with the **Carpets Co
 
 ## Set up the Carpets Core version
 
-When your 26.3 Carpets Core library is available, edit `gradle.properties`:
+The 26.3 dependency is now pinned to the [Carpets Core Fabric 26.3 CurseForge file](https://www.curseforge.com/minecraft/mc-mods/carpets-core/files/9578816):
 
 ```properties
-carpetcore_file_id=REPLACE_WITH_26_3_FABRIC_CURSEFORGE_FILE_ID
+carpetcore_file_id=9578816
 carpetcore_version=1.3.1
 ```
 
-Replace `carpetcore_file_id` with the numeric **CurseForge file ID** for the Fabric 26.3 artifact. Set `carpetcore_version` to the minimum supported **mod version**; this value populates the `carpetscore` dependency requirement in `fabric.mod.json`. The file ID and the mod version are different numbers.
+Update the file ID and minimum version only when publishing a newer Carpets Core build; CurseForge file IDs and mod versions are different values.
 
 The Gradle dependency remains required, and the source continues to use the library's `NoGravityVariantBlock`. No internal geometry replacement has been added.
 
@@ -33,4 +33,4 @@ The Gradle dependency remains required, and the source continues to use the libr
 
 After updating these properties, build locally using `./gradlew clean build`. Resources are packaged from `src/generated/resources`.
 
-**Not build-verified:** CI is deliberately omitted for this branch. Any additional 26.3 changes to the Carpets Core API must be accounted for in the new library version.
+GitHub Actions builds this branch with the Fabric 26.3 Carpets Core JAR from CurseForge and checks the packaged metadata and resources. The build result is reported by CI. Future Carpets Core API changes may require source adjustments.

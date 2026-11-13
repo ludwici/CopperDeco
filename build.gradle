@@ -1,6 +1,7 @@
 plugins {
     id 'java-library'
     id 'maven-publish'
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'net.neoforged.moddev' version '2.0.148'
     id 'idea'
 }
@@ -72,8 +73,7 @@ configurations {
 }
 
 dependencies {
-//    implementation "com.ludwici.carpetscore:${minecraft_version}-neo:${carpetcore_version}"
-    implementation "curse.maven:carpets-core-1140721:8298102"
+    implementation "curse.maven:carpets-core-1140721:9585810"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
@@ -86,6 +86,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_url                : mod_url,
             mod_issues_url         : mod_issues_url,
             mod_license_url        : mod_license_url,
+            carpetcore_version     : carpetcore_version,
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
@@ -122,5 +123,33 @@ idea {
     module {
         downloadSources = true
         downloadJavadoc = true
+    }
+}
+
+publishMods {
+    file = tasks.named("jar", Jar).flatMap { it.archiveFile }
+    changelog = "Minecraft 26.2 support; updated Carpets Core dependency to 1.3.2; updated mod metadata."
+    version = "${minecraft_version}-${mod_version}"
+    displayName = tasks.named("jar", Jar).flatMap { it.archiveFile }.map { it.asFile.name }
+    type = STABLE
+    modLoaders.add("neoforge")
+    dryRun = providers.gradleProperty("publishDryRun").map { it.toBoolean() }.orElse(false)
+
+    curseforge {
+        projectId = "1362062"
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        minecraftVersions.add(minecraft_version)
+        javaVersions.add(JavaVersion.VERSION_25)
+        client = true
+        server = true
+        requires("carpets-core")
+    }
+
+    modrinth {
+        projectId = providers.gradleProperty("modrinthProjectId").orElse("copper-deco")
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        version = "${minecraft_version}-${mod_version}"
+        minecraftVersions.add(minecraft_version)
+        requires("carpets-core")
     }
 }

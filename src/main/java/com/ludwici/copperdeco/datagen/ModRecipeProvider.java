@@ -1,7 +1,7 @@
 package com.ludwici.copperdeco.datagen;
 
 import net.minecraft.advancements.Advancement;
-import net.minecraft.core.BootstrapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;

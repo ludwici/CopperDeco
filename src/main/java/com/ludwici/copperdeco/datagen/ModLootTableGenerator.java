@@ -1,7 +1,7 @@
 package com.ludwici.copperdeco.datagen;
 
 import com.ludwici.carpetscore.api.datagen.LootTableHelper;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 import static com.ludwici.copperdeco.registry.BlockRegistry.BLOCKS;
 
 public class ModLootTableGenerator extends LootTableHelper {
-    protected ModLootTableGenerator(HolderLookup.Provider provider) {
-        super(provider);
+    protected ModLootTableGenerator(LootTableSubProvider.Context context) {
+        super(context);
     }
 
     @Override

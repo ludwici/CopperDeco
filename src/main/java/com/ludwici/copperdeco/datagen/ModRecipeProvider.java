@@ -1,21 +1,19 @@
 package com.ludwici.copperdeco.datagen;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.core.BootstrapContext;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
-
-import java.util.concurrent.CompletableFuture;
 
 import static com.ludwici.copperdeco.CopperAgeDecoration.MODID;
 import static com.ludwici.copperdeco.block.BaseCopperTileBlock.WAXABLES;
 import static com.ludwici.copperdeco.registry.BlockRegistry.*;
 
 public class ModRecipeProvider extends RecipeProvider {
-    public ModRecipeProvider(HolderLookup.Provider provider, RecipeOutput output) {
-        super(provider, output);
+    public ModRecipeProvider(BootstrapContext<Recipe<?>> recipes, BootstrapContext<Advancement> advancements) {
+        super(recipes, advancements, MODID);
     }
 
     @Override
@@ -57,19 +55,4 @@ public class ModRecipeProvider extends RecipeProvider {
                 .save(output);
     }
 
-    public static class Runner extends RecipeProvider.Runner {
-        public Runner(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries) {
-            super(packOutput, registries);
-        }
-
-        @Override
-        protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
-            return new ModRecipeProvider(registries, output);
-        }
-
-        @Override
-        public String getName() {
-            return MODID + ":recipe_provider";
-        }
-    }
 }

@@ -27,6 +27,18 @@ jobs:
         run: |
           chmod +x gradlew
           ./gradlew clean build --no-daemon --stacktrace
+      - name: Generate and validate fresh 26.3 data
+        run: |
+          ./gradlew runData --no-daemon --stacktrace
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path("build/generated/datagen")
+          for folder, minimum in (("data/copperdeco/recipe", 1), ("data/copperdeco/loot_table/blocks", 32)):
+              generated = list((root / folder).glob("*.json"))
+              assert len(generated) >= minimum, f"{folder}: expected >= {minimum} generated files, found {len(generated)}"
+          print("Validated generated 26.3 recipes and 32 block loot tables")
+          PY
       - name: Validate packed resources and Carpets Core metadata
         run: |
           python3 - <<'PY'

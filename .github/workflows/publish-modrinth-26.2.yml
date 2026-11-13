@@ -2,6 +2,11 @@ name: Publish Copper Deco 26.2 Modrinth
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - 26.2-neo
+    paths:
+      - '.github/MODRINTH_RELEASE_REQUEST'
 
 permissions:
   contents: read

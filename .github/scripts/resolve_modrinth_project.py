@@ -15,8 +15,10 @@ HEADERS = {
 }
 
 
-def api_json(method, path, body=None, content_type=None):
+def api_json(method, path, body=None, content_type=None, authenticated=True):
     headers = dict(HEADERS)
+    if not authenticated:
+        headers.pop("Authorization", None)
     if content_type:
         headers["Content-Type"] = content_type
 
@@ -78,16 +80,11 @@ def create_project(slug):
 
 
 def main():
-    user = api_json("GET", "/user")
-    account = user.get("username", "")
-    if account.casefold() != "ludwici":
-        raise RuntimeError(f"Modrinth token belongs to {account!r}, expected 'ludwici'")
-
-    projects = api_json("GET", "/user/ludwici/projects")
+    projects = api_json("GET", "/user/ludwici/projects", authenticated=False)
     matches = [
         p for p in projects
         if p.get("title", "").casefold() == "copper deco"
-        or p.get("source_url", "").rstrip("/").casefold() == "https://github.com/ludwici/copperdeco"
+        or (p.get("source_url") or "").rstrip("/").casefold() == "https://github.com/ludwici/copperdeco"
     ]
     if len(matches) > 1:
         raise RuntimeError("Multiple Modrinth projects matched Copper Deco; select the intended project manually")

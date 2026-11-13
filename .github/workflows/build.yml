@@ -57,6 +57,10 @@ jobs:
                   assert count >= 32, f"{folder}: found only {count} JSON resources"
           print(f"Verified {jars[0]} and Carpets Core Fabric 26.3 dependency")
           PY
+      - name: Validate CurseForge publication (dry run)
+        env:
+          CURSEFORGE_TOKEN: dry-run-only
+        run: ./gradlew publishCurseforge -PpublishDryRun=true --no-daemon --stacktrace
       - name: Upload Fabric JAR
         uses: actions/upload-artifact@v4
         with:

@@ -1,0 +1,55 @@
+name: Publish Copper Deco Fabric 26.3 to CurseForge
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '26.3-fabric'
+    paths:
+      - '.github/RELEASE_26_3'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: copperdeco-fabric-26.3-curseforge
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build release
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - name: Verify remapped artifact and metadata
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+          import json
+
+          jars = list(Path("build/libs").glob("copperdeco-fabric-26.3-1.0.3.jar"))
+          assert len(jars) == 1, f"Unexpected release JARs: {jars}"
+          with ZipFile(jars[0]) as jar:
+              meta = json.loads(jar.read("fabric.mod.json").decode("utf-8"))
+              assert meta["id"] == "copperdeco" and meta["version"] == "1.0.3"
+              assert meta["depends"]["minecraft"] == "26.3"
+              assert meta["depends"]["carpetscore"] == ">=1.3.1"
+              assert meta["icon"] in jar.namelist()
+          print(f"Release verified: {jars[0]}")
+          PY
+      - name: Publish only to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+        run: |
+          test -n "$CURSEFORGE_TOKEN" || { echo "Missing CURSEFORGE_TOKEN"; exit 1; }
+          ./gradlew publishCurseforge --no-daemon --stacktrace

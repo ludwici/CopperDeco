@@ -34,15 +34,14 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
       - uses: gradle/actions/setup-gradle@v4
       - name: Build Carpets Core 1.1.0 Fabric dependency
         run: |
-          sed -i "/include('forge')/d" carpetscore-source/settings.gradle
           chmod +x carpetscore-source/gradlew
           cd carpetscore-source
           for attempt in 1 2 3; do
-            if ./gradlew :fabric:build --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
+            if ./gradlew :fabric:build -PbuildLoader=fabric --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
               exit 0
             fi
             if [ "$attempt" -eq 3 ]; then

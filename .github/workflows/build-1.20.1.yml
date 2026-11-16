@@ -55,7 +55,7 @@ jobs:
           from pathlib import Path
           from zipfile import ZipFile
 
-          jars = list(Path("build/libs").glob("copperdeco-forge-1.20.1-1.0.3.jar"))
+          jars = list(Path("build/libs").glob("copperdeco-forge-1.20.1-1.0.0.jar"))
           assert len(jars) == 1, f"Expected Forge JAR, found: {jars}"
           with ZipFile(jars[0]) as jar:
               files = set(jar.namelist())
@@ -79,5 +79,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: copperdeco-forge-1.20.1
-          path: build/libs/copperdeco-forge-1.20.1-1.0.3.jar
+          path: build/libs/copperdeco-forge-1.20.1-1.0.0.jar
           if-no-files-found: error

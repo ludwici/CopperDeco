@@ -1,0 +1,75 @@
+import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+
+def portResourcesDirectory = layout.buildDirectory.dir("generated/copperdeco1201")
+
+tasks.register("preparePortResources") {
+    inputs.dir("src/generated/resources")
+    outputs.dir(portResourcesDirectory)
+
+    doLast {
+        File output = portResourcesDirectory.get().asFile
+        project.delete(output)
+        output.mkdirs()
+
+        project.copy {
+            from("src/generated/resources/assets")
+            into(new File(output, "assets"))
+        }
+
+        File source = file("src/generated/resources/data")
+        JsonSlurper slurper = new JsonSlurper()
+
+        fileTree(source).matching {
+            include "**/*.json"
+        }.each { File jsonFile ->
+            String relative = source.toPath().relativize(jsonFile.toPath()).toString().replace('\\', '/')
+            String target = relative
+                    .replace("/recipe/", "/recipes/")
+                    .replace("/advancement/", "/advancements/")
+                    .replace("/loot_table/", "/loot_tables/")
+                    .replace("/tags/block/", "/tags/blocks/")
+                    .replace("/tags/item/", "/tags/items/")
+
+            def data = slurper.parse(jsonFile)
+
+            if (relative.contains("/recipe/") && data.result instanceof Map && data.result.id) {
+                String resultId = data.result.id
+                int count = (data.result.count ?: 1) as int
+
+                if (data.type == "minecraft:stonecutting") {
+                    data.result = resultId
+                    data.count = count
+                } else {
+                    data.result.remove("id")
+                    data.result.item = resultId
+                }
+            }
+
+            if (relative.contains("/advancement/")) {
+                data.criteria?.each { String name, def criterion ->
+                    if (criterion.trigger == "minecraft:inventory_changed") {
+                        criterion.conditions?.items?.each { def predicate ->
+                            if (predicate.items instanceof String) {
+                                predicate.items = [predicate.items]
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (relative.contains("/loot_table/")) {
+                data.remove("random_sequence")
+            }
+
+            File destination = new File(output, "data/" + target)
+            destination.parentFile.mkdirs()
+            destination.text = JsonOutput.prettyPrint(JsonOutput.toJson(data)) + "\n"
+        }
+    }
+}
+
+sourceSets.main.resources.srcDir(portResourcesDirectory)
+tasks.named("processResources").configure {
+    dependsOn(tasks.named("preparePortResources"))
+}

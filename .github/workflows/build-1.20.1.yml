@@ -40,7 +40,16 @@ jobs:
         run: |
           chmod +x carpetscore-source/gradlew
           cd carpetscore-source
-          ./gradlew :forge:build --no-daemon --stacktrace
+          for attempt in 1 2 3; do
+            if ./gradlew :forge:build --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            echo "Carpets Core Forge build attempt $attempt failed; retrying dependency downloads"
+            sleep 15
+          done
       - name: Install library JAR for local Gradle dependency
         run: |
           mkdir -p libs

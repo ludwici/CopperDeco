@@ -55,7 +55,7 @@ mixin {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fg.deobf("curse.maven:carpets-core-1140721:${carpetcore_file_id}")
+    implementation fg.deobf(files("libs/carpetscore-forge-1.20.1-1.1.0.jar"))
     implementation fg.deobf("curse.maven:vanillabackport-417430:${vanillabackport_file_id}")
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }

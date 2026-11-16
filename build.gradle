@@ -14,6 +14,17 @@ base {
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = 'NeoForged ModLauncher Mirror'
+                url = uri('https://maven.neoforged.net/releases')
+            }
+        }
+        filter {
+            includeGroup 'cpw.mods'
+        }
+    }
     mavenCentral()
     maven {
         url "https://cursemaven.com"

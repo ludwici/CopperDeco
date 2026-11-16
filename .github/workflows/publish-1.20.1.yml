@@ -2,10 +2,6 @@ name: Publish Copper Deco 1.20.1
 
 on:
   workflow_dispatch:
-  push:
-    branches: ['1.20.1-forge']
-    paths:
-      - '.github/workflows/publish-1.20.1.yml'
 
 permissions:
   contents: read
@@ -16,7 +12,6 @@ concurrency:
 
 jobs:
   publish:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[publish]')
     runs-on: ubuntu-latest
     timeout-minutes: 70
     steps:
@@ -103,45 +98,22 @@ jobs:
       - name: Verify publication credentials
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: |
           test -n "$CURSEFORGE_TOKEN" || { echo "Missing CURSEFORGE_TOKEN"; exit 1; }
-          test -n "$MODRINTH_TOKEN" || { echo "Missing MODRINTH_TOKEN"; exit 1; }
-      - name: Verify publishing tasks (dry run)
+      - name: Verify CurseForge publishing tasks (dry run)
         env:
           CURSEFORGE_TOKEN: dry-run
-          MODRINTH_TOKEN: dry-run
         run: |
-          ./gradlew publishMods -PmodrinthProjectId=copperdeco -PpublishDryRun=true --no-daemon --stacktrace
-          (cd fabric-source && ./gradlew publishMods -PmodrinthProjectId=copperdeco -PpublishDryRun=true --no-daemon --stacktrace)
+          ./gradlew publishCurseforge -PpublishDryRun=true --no-daemon --stacktrace
+          (cd fabric-source && ./gradlew publishCurseforge -PpublishDryRun=true --no-daemon --stacktrace)
       - name: Publish Forge to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: ./gradlew publishCurseforge --no-daemon --stacktrace
       - name: Publish Fabric to CurseForge
         env:
           CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
         run: (cd fabric-source && ./gradlew publishCurseforge --no-daemon --stacktrace)
-      - name: Ensure own Copper Deco project on Modrinth
-        env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: python3 .github/scripts/ensure_modrinth_project.py ensure
-      - name: Publish Forge to Modrinth
-        env:
-          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: ./gradlew publishModrinth -PmodrinthProjectId="$MODRINTH_PROJECT_ID" --no-daemon --stacktrace
-      - name: Publish Fabric to Modrinth
-        env:
-          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: (cd fabric-source && ./gradlew publishModrinth -PmodrinthProjectId="$MODRINTH_PROJECT_ID" --no-daemon --stacktrace)
-      - name: Submit new Modrinth project for review
-        env:
-          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
-        run: python3 .github/scripts/ensure_modrinth_project.py submit
       - name: Upload release JARs for reference
         if: always()
         uses: actions/upload-artifact@v4

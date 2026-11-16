@@ -84,6 +84,12 @@ jobs:
               assert "META-INF/mods.toml" in files
           print(f"Verified Forge 1.20.1: {jars[0]}")
           PY
+      - name: Upload patched Carpets Core Forge 1.20.1 JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: carpetscore-forge-1.20.1-fixed
+          path: carpetscore-source/forge/build/libs/carpetscore-forge-1.20.1-1.1.0.jar
+          if-no-files-found: error
       - name: Upload Forge 1.20.1 JAR
         uses: actions/upload-artifact@v4
         with:

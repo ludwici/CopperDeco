@@ -68,7 +68,7 @@ jobs:
               ):
                   found = sum(path.startswith(folder) and path.endswith(".json") for path in files)
                   assert found >= count, f"{folder}: expected {count}, found {found}"
-              recipes = [f for f in files if "/recipes/" in f and f.endswith(".json")]
+              recipes = [f for f in files if (f.startswith("data/copperdeco/recipes/") or f.startswith("data/minecraft/recipes/")) and f.endswith(".json")]
               advancements = [f for f in files if "/advancements/recipes/" in f and f.endswith(".json")]
               assert len(recipes) == 49, f"Expected 49 recipes, found {len(recipes)}"
               assert len(advancements) == 49, f"Expected 49 advancements, found {len(advancements)}"

@@ -1,4 +1,5 @@
 plugins {
+    id 'me.modmuss50.mod-publish-plugin' version '2.2.1'
     id 'dev.architectury.loom' version '1.9-SNAPSHOT'
     id 'maven-publish'
 }
@@ -49,4 +50,34 @@ java {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 17
+}
+
+publishMods {
+    file = tasks.named("remapJar").flatMap { it.archiveFile }
+    changelog = "Backport of Copper Deco to Minecraft 1.20.1."
+    version = "${minecraft_version}-${mod_version}-${spec.loader}"
+    displayName = tasks.named("remapJar").flatMap { it.archiveFile }.map { it.asFile.name }
+    type = STABLE
+    modLoaders.add("fabric")
+    dryRun = providers.gradleProperty("publishDryRun").map { it.toBoolean() }.orElse(false)
+
+    curseforge {
+        projectId = "1362062"
+        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+        minecraftVersions.add(minecraft_version)
+        javaVersions.add(JavaVersion.VERSION_17)
+        client = true
+        server = true
+        requires("carpets-core")
+        requires("vanillabackport")
+    }
+
+    modrinth {
+        projectId = providers.gradleProperty("modrinthProjectId").orElse("copperdeco")
+        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+        version = "${minecraft_version}-${mod_version}-${spec.loader}"
+        minecraftVersions.add(minecraft_version)
+        requires("carpets-core")
+        requires("vanillabackport")
+    }
 }

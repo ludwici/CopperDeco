@@ -56,7 +56,7 @@ jobs:
           from pathlib import Path
           from zipfile import ZipFile
 
-          jars = list(Path("build/libs").glob("copperdeco-fabric-1.20.1-1.0.3.jar"))
+          jars = list(Path("build/libs").glob("copperdeco-fabric-1.20.1-1.0.0.jar"))
           assert len(jars) == 1, f"Expected Fabric JAR, found: {jars}"
           with ZipFile(jars[0]) as jar:
               files = set(jar.namelist())
@@ -73,7 +73,7 @@ jobs:
               assert len(recipes) == 49, f"Expected 49 recipes, found {len(recipes)}"
               assert len(advancements) == 49, f"Expected 49 advancements, found {len(advancements)}"
               data = json.loads(jar.read("fabric.mod.json"))
-              assert data["version"] == "1.0.3"
+              assert data["version"] == "1.0.0"
               assert data["depends"]["carpetscore"] == ">=1.1.0"
               assert data["depends"]["vanillabackport"] == ">=1.2.2"
           print(f"Verified Fabric 1.20.1: {jars[0]}")
@@ -82,5 +82,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: copperdeco-fabric-1.20.1
-          path: build/libs/copperdeco-fabric-1.20.1-1.0.3.jar
+          path: build/libs/copperdeco-fabric-1.20.1-1.0.0.jar
           if-no-files-found: error

@@ -113,12 +113,4 @@ publishMods {
         requires("vanillabackport")
     }
 
-    modrinth {
-        projectId = providers.gradleProperty("modrinthProjectId").orElse("copperdeco")
-        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        version = "${minecraft_version}-${mod_version}-forge"
-        minecraftVersions.add(minecraft_version)
-        requires("carpets-core")
-        requires("vanillabackport")
-    }
 }

@@ -41,7 +41,7 @@ jobs:
           chmod +x carpetscore-source/gradlew
           cd carpetscore-source
           for attempt in 1 2 3; do
-            if ./gradlew :forge:build --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
+            if ./gradlew :forge:build -PbuildLoader=forge --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
               exit 0
             fi
             if [ "$attempt" -eq 3 ]; then

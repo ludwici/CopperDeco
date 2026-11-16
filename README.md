@@ -1,12 +1,15 @@
-[![curseforge](https://cf.way2muchnoise.eu/full_1362062_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants)
+# Copper Deco — Fabric 1.20.1
 
+Port of Copper Deco 1.0.3 for Minecraft 1.20.1 / Fabric (Java 17).
 
-![neoforge](https://github.com/thomasglasser/thomasglasser/blob/main/files/badges/cozy/supported/neoforge_64h.png?raw=true)
+## Required mods
 
+- [Carpets Core 1.1.0 for Fabric 1.20.1](https://www.curseforge.com/minecraft/mc-mods/carpets-core)
+- [Vanilla Backport 1.2.2 for Fabric 1.20.1](https://www.curseforge.com/minecraft/mc-mods/vanillabackport/files/9318538)
+- [Fabric API 0.92.2+1.20.1](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
 
-[![patreon-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_64h.png)](https://www.patreon.com/ludwici)
-[![kofi-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular-alt_64h.png)](https://ko-fi.com/ludwici)
+All 32 copper tile variants are registered under stable `copperdeco` IDs. Chiseled Copper and Copper Grate come from Vanilla Backport. The gameplay includes copper oxidation, waxing and scraping, waterlogging, multi-face placement, and lightning cleaning.
 
-Check my other mods:
+Assets are retained from the original mod. `preparePortResources` converts recipes, advancements, loot tables, and tag paths for Minecraft 1.20.1 during the build.
 
-[![carpet-variants](https://i.imgur.com/G1XpmL4.png)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants) [![mob-loot-variants](https://i.imgur.com/n1X16BM.png)](https://www.curseforge.com/minecraft/mc-mods/mob-loot-variants) [![better-block-sounds-fork](https://i.imgur.com/epM9STT.png)](https://www.curseforge.com/minecraft/mc-mods/better-block-sounds-fork) [![slime-overhaul](https://i.postimg.cc/7LPXcWkr/so-logo-mini.png)](https://www.curseforge.com/minecraft/mc-mods/slime-overhaul) [![polyglot](https://i.postimg.cc/d3RCh0RZ/polyglot-mini.jpg)](https://www.curseforge.com/minecraft/mc-mods/polyglot)
+Use `./gradlew clean build` after placing the Carpets Core 1.1.0 Fabric distribution JAR in `libs/`. GitHub CI builds this library directly from its source branch while new CurseForge files undergo review.

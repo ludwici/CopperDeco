@@ -38,9 +38,19 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build Carpets Core 1.1.0 Fabric dependency
         run: |
+          sed -i "/include('forge')/d" carpetscore-source/settings.gradle
           chmod +x carpetscore-source/gradlew
           cd carpetscore-source
-          ./gradlew :fabric:build --no-daemon --stacktrace
+          for attempt in 1 2 3; do
+            if ./gradlew :fabric:build --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            echo "Carpets Core Fabric build attempt $attempt failed; retrying dependency downloads"
+            sleep 15
+          done
       - name: Install library JAR
         run: |
           mkdir -p libs

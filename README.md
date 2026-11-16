@@ -13,4 +13,4 @@ The 1.21.1 models are retained. The `preparePortResources` task converts static 
 
 Run `./gradlew clean build`. GitHub Actions builds and verifies the JAR when the library release file ID is available.
 
-The CurseForge file ID in `gradle.properties` must match the freshly published 1.20.1 Forge build of Carpets Core 1.1.0.
+Build Carpets Core 1.1.0 from its `1.20.1` branch (`./gradlew :forge:build`), then copy `forge/build/libs/carpetscore-forge-1.20.1-1.1.0.jar` to this repository's `libs/` directory. GitHub CI performs these steps automatically until the new CurseForge file has finished processing.

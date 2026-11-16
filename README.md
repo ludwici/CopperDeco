@@ -1,12 +1,16 @@
-[![curseforge](https://cf.way2muchnoise.eu/full_1362062_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants)
+# Copper Deco — Forge 1.20.1
 
+Port of Copper Deco 1.0.3 for Minecraft 1.20.1 / Forge 47.3.1 (Java 17).
 
-![neoforge](https://github.com/thomasglasser/thomasglasser/blob/main/files/badges/cozy/supported/neoforge_64h.png?raw=true)
+## Required mods
 
+- [Carpets Core 1.1.0 for Forge 1.20.1](https://www.curseforge.com/minecraft/mc-mods/carpets-core)
+- [Vanilla Backport 1.2.2 for Forge 1.20.1](https://www.curseforge.com/minecraft/mc-mods/vanillabackport/files/9318528)
 
-[![patreon-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/patreon-singular_64h.png)](https://www.patreon.com/ludwici)
-[![kofi-singular](https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular-alt_64h.png)](https://ko-fi.com/ludwici)
+All 32 copper tile variants, including Chiseled Copper and Copper Grate from Vanilla Backport, are registered under the original `copperdeco` IDs. Copper tiles support oxidation, waxing, axe scraping, lightning cleaning, waterlogging, and independent face placement via Carpets Core.
 
-Check my other mods:
+The 1.21.1 models are retained. The `preparePortResources` task converts static JSON to the 1.20.1 paths and recipe syntax during builds without overwriting the source assets.
 
-[![carpet-variants](https://i.imgur.com/G1XpmL4.png)](https://www.curseforge.com/minecraft/mc-mods/carpet-variants) [![mob-loot-variants](https://i.imgur.com/n1X16BM.png)](https://www.curseforge.com/minecraft/mc-mods/mob-loot-variants) [![better-block-sounds-fork](https://i.imgur.com/epM9STT.png)](https://www.curseforge.com/minecraft/mc-mods/better-block-sounds-fork) [![slime-overhaul](https://i.postimg.cc/7LPXcWkr/so-logo-mini.png)](https://www.curseforge.com/minecraft/mc-mods/slime-overhaul) [![polyglot](https://i.postimg.cc/d3RCh0RZ/polyglot-mini.jpg)](https://www.curseforge.com/minecraft/mc-mods/polyglot)
+Run `./gradlew clean build`. GitHub Actions builds and verifies the JAR when the library release file ID is available.
+
+The CurseForge file ID in `gradle.properties` must match the freshly published 1.20.1 Forge build of Carpets Core 1.1.0.

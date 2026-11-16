@@ -1,129 +1,82 @@
 plugins {
-    id 'java-library'
-    id 'maven-publish'
-    id 'net.neoforged.moddev' version '2.0.113'
-    id 'idea'
+    id 'java'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
-tasks.named('wrapper', Wrapper).configure {
-    distributionType = Wrapper.DistributionType.BIN
-}
-
-version = mod_version
 group = mod_group_id
+version = mod_version
+
+base {
+    archivesName = "copperdeco-forge-${minecraft_version}"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
         url "https://cursemaven.com"
     }
-}
-
-base {
-    archivesName = "${mod_id}-${minecraft_version}"
-}
-
-java.toolchain.languageVersion = JavaLanguageVersion.of(21)
-
-neoForge {
-    version = project.neo_version
-
-    parchment {
-        mappingsVersion = project.parchment_mappings_version
-        minecraftVersion = project.parchment_minecraft_version
+    maven {
+        url "https://repo.spongepowered.org/repository/maven-public/"
     }
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
 
     runs {
         client {
-            client()
+            workingDirectory project.file('run')
+            mods {
+                copperdeco {
+                    source sourceSets.main
+                }
+            }
         }
-
         server {
-            server()
-            programArgument '--nogui'
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        gameTestServer {
-            type = "gameTestServer"
-            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
-        }
-
-        data {
-            data()
-
-            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-
-            logLevel = org.slf4j.event.Level.DEBUG
-        }
-    }
-
-    mods {
-        "${mod_id}" {
-            sourceSet(sourceSets.main)
+            workingDirectory project.file('run')
+            args '--nogui'
+            mods {
+                copperdeco {
+                    source sourceSets.main
+                }
+            }
         }
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
-
-configurations {
-    runtimeClasspath.extendsFrom localRuntime
+mixin {
+    add(sourceSets.main, "copperdeco.refmap.json")
+    config("copperdeco.mixins.json")
 }
 
 dependencies {
-//    implementation "com.ludwici.carpetscore:carpetscore-neoforge-${minecraft_version}:${carpetcore_version}"
-    implementation "curse.maven:carpets-core-1140721:7095567"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation fg.deobf("curse.maven:carpets-core-1140721:${carpetcore_file_id}")
+    implementation fg.deobf("curse.maven:vanillabackport-417430:${vanillabackport_file_id}")
+    annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT:processor")
 }
 
-var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
-    var replaceProperties = [
-            minecraft_version      : minecraft_version,
-            minecraft_version_range: minecraft_version_range,
-            neo_version            : neo_version,
-            loader_version_range   : loader_version_range,
-            mod_id                 : mod_id,
-            mod_url                : mod_url,
-            mod_name               : mod_name,
-            mod_license            : mod_license,
-            mod_version            : mod_version,
-            mod_authors            : mod_authors,
-            mod_description        : mod_description
-    ]
-    inputs.properties replaceProperties
-    expand replaceProperties
-    from "src/main/templates"
-    into "build/generated/sources/modMetadata"
+apply from: 'port-resources.gradle'
+
+processResources {
+    inputs.property "version", project.version
+    filesMatching("META-INF/mods.toml") {
+        expand(version: project.version)
+    }
 }
 
-sourceSets.main.resources.srcDir generateModMetadata
-neoForge.ideSyncTask generateModMetadata
-
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            from components.java
-        }
+jar {
+    manifest {
+        attributes(["MixinConfigs": "copperdeco.mixins.json"])
     }
-    repositories {
-        maven {
-            url "file://${project.projectDir}/repo"
-        }
-    }
+    finalizedBy 'reobfJar'
 }
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
-}
-
-idea {
-    module {
-        downloadSources = true
-        downloadJavadoc = true
-    }
+    options.release = 17
 }

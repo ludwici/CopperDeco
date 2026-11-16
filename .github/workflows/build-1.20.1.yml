@@ -1,0 +1,83 @@
+name: Build Copper Deco Forge 1.20.1
+
+on:
+  push:
+    branches:
+      - '1.20.1-forge'
+    paths:
+      - 'src/**'
+      - 'build.gradle'
+      - 'settings.gradle'
+      - 'gradle.properties'
+      - 'gradle/**'
+      - 'port-resources.gradle'
+      - '.github/workflows/build-1.20.1.yml'
+  pull_request:
+    branches:
+      - '1.20.1-forge'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ludwici/CarpetsCore
+          ref: '1.20.1'
+          path: carpetscore-source
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Carpets Core 1.1.0 Forge dependency
+        run: |
+          chmod +x carpetscore-source/gradlew
+          cd carpetscore-source
+          ./gradlew :forge:build --no-daemon --stacktrace
+      - name: Install library JAR for local Gradle dependency
+        run: |
+          mkdir -p libs
+          cp carpetscore-source/forge/build/libs/carpetscore-forge-1.20.1-1.1.0.jar libs/
+      - name: Build Copper Deco Forge 1.20.1
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - name: Verify 32 variants and 1.20.1 resource format
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          jars = list(Path("build/libs").glob("copperdeco-forge-1.20.1-1.0.3.jar"))
+          assert len(jars) == 1, f"Expected Forge JAR, found: {jars}"
+          with ZipFile(jars[0]) as jar:
+              files = set(jar.namelist())
+              for folder, expected in (
+                  ("assets/copperdeco/blockstates/", 32),
+                  ("assets/copperdeco/models/block/", 32),
+                  ("assets/copperdeco/models/item/", 32),
+                  ("data/copperdeco/loot_tables/blocks/", 32),
+              ):
+                  count = sum(path.startswith(folder) and path.endswith(".json") for path in files)
+                  assert count >= expected, f"{folder} contains {count}, expected {expected}"
+              recipes = [f for f in files if "/recipes/" in f and f.endswith(".json")]
+              advancements = [f for f in files if "/advancements/recipes/" in f and f.endswith(".json")]
+              assert len(recipes) == 49, f"Expected 49 recipes, got {len(recipes)}"
+              assert len(advancements) == 49, f"Expected 49 advancements, got {len(advancements)}"
+              assert "com/ludwici/copperdeco/block/CopperTileBlock.class" in files
+              assert "META-INF/mods.toml" in files
+          print(f"Verified Forge 1.20.1: {jars[0]}")
+          PY
+      - name: Upload Forge 1.20.1 JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: copperdeco-forge-1.20.1
+          path: build/libs/copperdeco-forge-1.20.1-1.0.3.jar
+          if-no-files-found: error

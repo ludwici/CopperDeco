@@ -86,6 +86,8 @@ def main():
             "source_url": "https://github.com/ludwici/CopperDeco",
             "issues_url": "https://github.com/ludwici/CopperDeco/issues",
             "is_draft": True,
+            "initial_versions": [],
+            "gallery_items": [],
         }
         data, content_type = multipart(metadata, Path("src/main/resources/copperdeco.png"))
         project = api("/project", "POST", data, content_type)

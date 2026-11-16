@@ -73,6 +73,8 @@ sourceSets.main.resources.srcDir(portResourcesDirectory)
 tasks.named("processResources").configure {
     dependsOn(tasks.named("preparePortResources"))
 }
-tasks.named("sourcesJar").configure {
-    dependsOn(tasks.named("preparePortResources"))
+tasks.withType(Jar).configureEach {
+    if (name == "sourcesJar") {
+        dependsOn(tasks.named("preparePortResources"))
+    }
 }

@@ -2,6 +2,10 @@ name: Publish Copper Deco 1.20.1
 
 on:
   workflow_dispatch:
+  push:
+    branches: ['1.20.1-forge']
+    paths:
+      - '.github/workflows/publish-1.20.1.yml'
 
 permissions:
   contents: read
@@ -12,6 +16,7 @@ concurrency:
 
 jobs:
   publish:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[publish]')
     runs-on: ubuntu-latest
     timeout-minutes: 70
     steps:

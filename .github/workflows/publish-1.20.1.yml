@@ -1,0 +1,148 @@
+name: Publish Copper Deco 1.20.1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: copperdeco-1.20.1-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 70
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: ludwici/CopperDeco
+          ref: '1.20.1-fabric'
+          path: fabric-source
+      - uses: actions/checkout@v4
+        with:
+          repository: ludwici/CarpetsCore
+          ref: '1.20.1'
+          path: carpetscore-source
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Carpets Core Forge
+        run: |
+          chmod +x carpetscore-source/gradlew
+          for attempt in 1 2 3; do
+            if (cd carpetscore-source && ./gradlew :forge:build -PbuildLoader=forge --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000); then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sleep 15
+          done
+          mkdir -p libs
+          cp carpetscore-source/forge/build/libs/carpetscore-forge-1.20.1-1.1.0.jar libs/
+      - name: Build Copper Deco Forge
+        run: |
+          chmod +x gradlew
+          ./gradlew clean build --no-daemon --stacktrace
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Build Carpets Core Fabric
+        run: |
+          for attempt in 1 2 3; do
+            if (cd carpetscore-source && ./gradlew :fabric:build -PbuildLoader=fabric --no-daemon --stacktrace -Dorg.gradle.internal.http.connectionTimeout=60000 -Dorg.gradle.internal.http.socketTimeout=120000); then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              exit 1
+            fi
+            sleep 15
+          done
+          mkdir -p fabric-source/libs
+          cp carpetscore-source/fabric/build/libs/carpetscore-fabric-1.20.1-1.1.0.jar fabric-source/libs/
+      - name: Build Copper Deco Fabric
+        run: |
+          chmod +x fabric-source/gradlew
+          (cd fabric-source && ./gradlew clean build --no-daemon --stacktrace)
+      - name: Verify 1.20.1 release JARs
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          from zipfile import ZipFile
+
+          files = {
+              "forge": Path("build/libs/copperdeco-forge-1.20.1-1.0.0.jar"),
+              "fabric": Path("fabric-source/build/libs/copperdeco-fabric-1.20.1-1.0.0.jar")
+          }
+          for loader, path in files.items():
+              assert path.is_file(), f"Missing release JAR: {path}"
+              with ZipFile(path) as jar:
+                  contents = set(jar.namelist())
+                  assert "com/ludwici/copperdeco/block/CopperTileBlock.class" in contents
+                  if loader == "forge":
+                      metadata = jar.read("META-INF/mods.toml").decode()
+                      assert 'versionRange="[1.2.2,)"' in metadata
+                  else:
+                      metadata = json.loads(jar.read("fabric.mod.json"))
+                      assert metadata["version"] == "1.0.0"
+                      assert metadata["depends"]["vanillabackport"] == ">=1.2.2"
+          print("Both Copper Deco 1.20.1 release JARs verified")
+          PY
+      - name: Verify publication credentials
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: |
+          test -n "$CURSEFORGE_TOKEN" || { echo "Missing CURSEFORGE_TOKEN"; exit 1; }
+          test -n "$MODRINTH_TOKEN" || { echo "Missing MODRINTH_TOKEN"; exit 1; }
+      - name: Verify publishing tasks (dry run)
+        env:
+          CURSEFORGE_TOKEN: dry-run
+          MODRINTH_TOKEN: dry-run
+        run: |
+          ./gradlew publishMods -PmodrinthProjectId=copperdeco -PpublishDryRun=true --no-daemon --stacktrace
+          (cd fabric-source && ./gradlew publishMods -PmodrinthProjectId=copperdeco -PpublishDryRun=true --no-daemon --stacktrace)
+      - name: Publish Forge to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: ./gradlew publishCurseforge --no-daemon --stacktrace
+      - name: Publish Fabric to CurseForge
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: (cd fabric-source && ./gradlew publishCurseforge --no-daemon --stacktrace)
+      - name: Ensure own Copper Deco project on Modrinth
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: python3 .github/scripts/ensure_modrinth_project.py ensure
+      - name: Publish Forge to Modrinth
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: ./gradlew publishModrinth -PmodrinthProjectId="$MODRINTH_PROJECT_ID" --no-daemon --stacktrace
+      - name: Publish Fabric to Modrinth
+        env:
+          CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE_TOKEN }}
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: (cd fabric-source && ./gradlew publishModrinth -PmodrinthProjectId="$MODRINTH_PROJECT_ID" --no-daemon --stacktrace)
+      - name: Submit new Modrinth project for review
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: python3 .github/scripts/ensure_modrinth_project.py submit
+      - name: Upload release JARs for reference
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: copperdeco-1.20.1-release
+          path: |
+            build/libs/copperdeco-forge-1.20.1-1.0.0.jar
+            fabric-source/build/libs/copperdeco-fabric-1.20.1-1.0.0.jar
+          if-no-files-found: warn
